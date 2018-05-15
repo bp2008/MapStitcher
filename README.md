@@ -9,7 +9,7 @@ This program has a hard size limit of 10922 tiles per stitching operation, due t
 
 1. Download from the [releases tab](https://github.com/bp2008/MapStitcher/releases) and extract to a location where you have write-permission (such as your desktop).  Run MapStitcher.exe.
 
-2. Enter latitude and longitude of the upper-left and lower-right corners of the region you wish to create a map for.  A preview of the selected region will appear.
+2. Enter latitude and longitude of the upper-left and lower-right corners of the region you wish to create a map for.  A preview of the selected region will appear, at a zoom level appropriate for showing the entire region.  The zoom level you see in the preview is not representative of the map tiles which will be downloaded and stitched.
 
 3. Enter a Zoom level between 0 and 23.  Note that high zoom levels are not available in many parts of the world, and 20 is commonly the limit.
 
