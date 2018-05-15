@@ -1,7 +1,7 @@
 # MapStitcher
 A simple Windows program to bulk-download map tiles and stitch them together.
 
-The default map source is Google Maps' satellite imagery, but MapStitcher should in theory be compatible with any map server which shares a similar API and uses the Mercator projection.
+The default map source is Google Maps' satellite imagery, but MapStitcher should in theory be compatible with any map server which shares a similar API, 256x256 tiles, and the Mercator projection.
 
 This program has a hard size limit of 10922 tiles per stitching operation, due to the maximum capacity of a byte array.
 
