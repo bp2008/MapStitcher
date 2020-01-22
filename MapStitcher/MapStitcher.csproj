@@ -50,6 +50,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FourTiles.cs" />
+    <Compile Include="ImageCodec.cs" />
+    <Compile Include="PngCodec.cs" />
+    <Compile Include="JpegCodec.cs" />
     <Compile Include="LatLon.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>

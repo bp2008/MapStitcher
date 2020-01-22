@@ -54,6 +54,8 @@
 			this.lblPercent = new System.Windows.Forms.Label();
 			this.picPreview = new System.Windows.Forms.PictureBox();
 			this.lblTileInfo = new System.Windows.Forms.Label();
+			this.nudOutputQuality = new System.Windows.Forms.NumericUpDown();
+			this.label10 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.nudZoom)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudDownloadThreads)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudStitchThreads)).BeginInit();
@@ -62,6 +64,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.nudEndLat)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudEndLon)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.picPreview)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudOutputQuality)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -92,7 +95,7 @@
             0});
 			this.nudZoom.Name = "nudZoom";
 			this.nudZoom.Size = new System.Drawing.Size(58, 31);
-			this.nudZoom.TabIndex = 11;
+			this.nudZoom.TabIndex = 50;
 			this.nudZoom.ValueChanged += new System.EventHandler(this.nudZoom_ValueChanged);
 			// 
 			// label6
@@ -136,17 +139,17 @@
 			this.btnDownload.Location = new System.Drawing.Point(14, 432);
 			this.btnDownload.Name = "btnDownload";
 			this.btnDownload.Size = new System.Drawing.Size(169, 23);
-			this.btnDownload.TabIndex = 23;
+			this.btnDownload.TabIndex = 60;
 			this.btnDownload.Text = "Download Maps";
 			this.btnDownload.UseVisualStyleBackColor = true;
 			this.btnDownload.Click += new System.EventHandler(this.btnDownload_Click);
 			// 
 			// btnStitchIntoOne
 			// 
-			this.btnStitchIntoOne.Location = new System.Drawing.Point(12, 492);
+			this.btnStitchIntoOne.Location = new System.Drawing.Point(14, 515);
 			this.btnStitchIntoOne.Name = "btnStitchIntoOne";
 			this.btnStitchIntoOne.Size = new System.Drawing.Size(169, 23);
-			this.btnStitchIntoOne.TabIndex = 25;
+			this.btnStitchIntoOne.TabIndex = 90;
 			this.btnStitchIntoOne.Text = "Stitch Into One Map";
 			this.btnStitchIntoOne.UseVisualStyleBackColor = true;
 			this.btnStitchIntoOne.Click += new System.EventHandler(this.btnStitchIntoOne_Click);
@@ -175,7 +178,7 @@
             0});
 			this.nudDownloadThreads.Name = "nudDownloadThreads";
 			this.nudDownloadThreads.Size = new System.Drawing.Size(44, 20);
-			this.nudDownloadThreads.TabIndex = 19;
+			this.nudDownloadThreads.TabIndex = 55;
 			this.nudDownloadThreads.Value = new decimal(new int[] {
             2,
             0,
@@ -198,7 +201,7 @@
             0});
 			this.nudStitchThreads.Name = "nudStitchThreads";
 			this.nudStitchThreads.Size = new System.Drawing.Size(44, 20);
-			this.nudStitchThreads.TabIndex = 21;
+			this.nudStitchThreads.TabIndex = 70;
 			this.nudStitchThreads.Value = new decimal(new int[] {
             4,
             0,
@@ -348,9 +351,9 @@
 			// lblPercent
 			// 
 			this.lblPercent.Font = new System.Drawing.Font("Consolas", 39.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblPercent.Location = new System.Drawing.Point(12, 518);
+			this.lblPercent.Location = new System.Drawing.Point(12, 541);
 			this.lblPercent.Name = "lblPercent";
-			this.lblPercent.Size = new System.Drawing.Size(169, 84);
+			this.lblPercent.Size = new System.Drawing.Size(169, 78);
 			this.lblPercent.TabIndex = 41;
 			this.lblPercent.Text = "--%";
 			this.lblPercent.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -372,11 +375,30 @@
 			this.lblTileInfo.TabIndex = 43;
 			this.lblTileInfo.Text = "...";
 			// 
+			// nudOutputQuality
+			// 
+			this.nudOutputQuality.Location = new System.Drawing.Point(118, 492);
+			this.nudOutputQuality.Name = "nudOutputQuality";
+			this.nudOutputQuality.Size = new System.Drawing.Size(44, 20);
+			this.nudOutputQuality.TabIndex = 80;
+			this.nudOutputQuality.ValueChanged += new System.EventHandler(this.nudOutputQuality_ValueChanged);
+			// 
+			// label10
+			// 
+			this.label10.AutoSize = true;
+			this.label10.Location = new System.Drawing.Point(8, 494);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(104, 13);
+			this.label10.TabIndex = 45;
+			this.label10.Text = "Jpeg Quality [1-100]:";
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(712, 680);
+			this.Controls.Add(this.label10);
+			this.Controls.Add(this.nudOutputQuality);
 			this.Controls.Add(this.lblTileInfo);
 			this.Controls.Add(this.picPreview);
 			this.Controls.Add(this.lblPercent);
@@ -415,6 +437,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.nudEndLat)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudEndLon)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.picPreview)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudOutputQuality)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -448,6 +471,8 @@
 		private System.Windows.Forms.Label lblPercent;
 		private System.Windows.Forms.PictureBox picPreview;
 		private System.Windows.Forms.Label lblTileInfo;
+		private System.Windows.Forms.NumericUpDown nudOutputQuality;
+		private System.Windows.Forms.Label label10;
 	}
 }
 

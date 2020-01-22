@@ -1,0 +1,2 @@
+https://c.tile.openstreetmap.org/{Z}/{X}/{Y}.png
+https://khms0.googleapis.com/kh?v=862&hl=en-US&x={X}&y={Y}&z={Z}

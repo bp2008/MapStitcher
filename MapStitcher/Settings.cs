@@ -17,5 +17,6 @@ namespace MapStitcher
 		public int zoom = 20;
 		public int downloadThreads = 2;
 		public int stitchThreads = 4;
+		public int jpegQuality = 80;
 	}
 }

@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -38,6 +37,7 @@ namespace MapStitcher
 			nudZoom.Value = settings.zoom;
 			nudDownloadThreads.Value = settings.downloadThreads;
 			nudStitchThreads.Value = settings.stitchThreads;
+			nudOutputQuality.Value = settings.jpegQuality;
 			saveEnabled = true;
 			if (BuildTileInfoLabel())
 				GetPreviewFrame();
@@ -55,6 +55,7 @@ namespace MapStitcher
 				settings.zoom = (int)nudZoom.Value;
 				settings.downloadThreads = (int)nudDownloadThreads.Value;
 				settings.stitchThreads = (int)nudStitchThreads.Value;
+				settings.jpegQuality = (int)nudOutputQuality.Value;
 				settings.Save();
 				if (BuildTileInfoLabel())
 					GetPreviewFrame();
@@ -235,15 +236,11 @@ namespace MapStitcher
 
 
 
-		private static void WriteCompressedImage(string outPath, byte[] img, int width, int height)
+		private void WriteCompressedImage(string outPath, byte[] img, int width, int height)
 		{
-			using (turbojpegCLI.TJCompressor comp = new turbojpegCLI.TJCompressor(img, width, height))
-			{
-				comp.setSubsamp(turbojpegCLI.SubsamplingOption.SAMP_420);
-				comp.setJPEGQuality(80);
-				byte[] compressed = comp.compressToExactSize();
-				File.WriteAllBytes(outPath, compressed);
-			}
+			JpegCodec imgCodec = new JpegCodec();
+			byte[] compressed = imgCodec.Encode(img, width, height, turbojpegCLI.SubsamplingOption.SAMP_420, settings.jpegQuality, turbojpegCLI.PixelFormat.BGR);
+			File.WriteAllBytes(outPath, compressed);
 		}
 
 		private void SynchronousDownloadTileIfNotCached(string BaseURL, Point tile, int zoom)
@@ -465,17 +462,13 @@ namespace MapStitcher
 				if (imagesToLoad.Count == 0)
 					return "No images!";
 				Size chunkSize = new Size();
-				using (turbojpegCLI.TJDecompressor dec = new turbojpegCLI.TJDecompressor())
+				if (imagesToLoad.TryPeek(out Point p1))
 				{
-					if (imagesToLoad.TryPeek(out Point p))
-					{
-						string path = GetFileName(z, p.X, p.Y);
-						byte[] compressed = File.ReadAllBytes(path);
-						dec.setSourceImage(compressed, compressed.Length);
-						byte[] raw = dec.decompress();
-						chunkSize.Width = dec.getWidth();
-						chunkSize.Height = dec.getHeight();
-					}
+					string path = GetFileName(z, p1.X, p1.Y);
+					byte[] compressed = File.ReadAllBytes(path);
+					byte[] raw = ImageCodec.FactoryNew(compressed).Decode(compressed, out int w, out int h);
+					chunkSize.Width = w;
+					chunkSize.Height = h;
 				}
 				int stride = (int)(3 * tilesWide * chunkSize.Width);
 				byte[] stitchData = new byte[stride * (tilesTall * chunkSize.Height)];
@@ -581,8 +574,6 @@ namespace MapStitcher
 		/// <param name="tile">The tile to merge into a larger image.</param>
 		/// <param name="zoom">The zoom level of the tile.</param>
 		/// <param name="dest">The byte array that is the raw larger image.</param>
-		/// <param name="dec">A reusable TJDecompressor instance.</param>
-		/// <param name="raw">A reusable byte array the exact size of one tile's data, or null.</param>
 		/// <param name="chunkSize">The required dimensions of a chunk.</param>
 		/// <param name="startTile">The upper-left tile (for calculating the correct position in the [dest] array).</param>
 		/// <param name="stride">The number of bytes used by each line of pixels in the [dest] array.</param>
@@ -590,13 +581,12 @@ namespace MapStitcher
 		{
 			string error = null;
 			byte[] data = File.ReadAllBytes(path);
-			dec.setSourceImage(data, data.Length);
-			if (raw == null)
-				raw = dec.decompress();
+			ImageCodec imgCodec = ImageCodec.FactoryNew(data);
+			int w, h;
+			if (imgCodec is JpegCodec)
+				((JpegCodec)imgCodec).Decode(data, out w, out h, dec, ref raw);
 			else
-				dec.decompress(raw);
-			int w = dec.getWidth();
-			int h = dec.getHeight();
+				raw = imgCodec.Decode(data, out w, out h);
 			int rawW = w * 3;
 			if (chunkSize.Width != w || chunkSize.Height != h)
 			{
@@ -667,28 +657,9 @@ namespace MapStitcher
 			SaveSettings();
 		}
 
-		#region Image Format Identification
-		private static Dictionary<byte[], ImageFormat> imageFormatIdentificationMap = new Dictionary<byte[], ImageFormat>()
+		private void nudOutputQuality_ValueChanged(object sender, EventArgs e)
 		{
-			{ new byte[] { 0x42, 0x4D }, ImageFormat.Bmp },
-			{ new byte[] { 0x47, 0x49, 0x46, 0x38, 0x37, 0x61 }, ImageFormat.Gif },
-			{ new byte[] { 0x47, 0x49, 0x46, 0x38, 0x39, 0x61 }, ImageFormat.Gif },
-			{ new byte[] { 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A }, ImageFormat.Png},
-			{ new byte[] { 0xff, 0xd8 }, ImageFormat.Jpeg },
-		};
-		public static ImageFormat GetFormat(byte[] imageData)
-		{
-			return imageFormatIdentificationMap.FirstOrDefault(kvp => StartsWith(imageData, kvp.Key)).Value;
+			SaveSettings();
 		}
-		private static bool StartsWith(byte[] a, byte[] b)
-		{
-			if (a == null || a.Length < b.Length)
-				return false;
-			for (int i = 0; i < b.Length; i += 1)
-				if (a[i] != b[i])
-					return false;
-			return true;
-		}
-		#endregion
 	}
 }
