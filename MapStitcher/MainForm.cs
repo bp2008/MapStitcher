@@ -27,6 +27,7 @@ namespace MapStitcher
 
 		public MainForm()
 		{
+			CertificateValidation.RegisterCallback(CertificateValidation.DoNotValidate_ValidationCallback);
 			InitializeComponent();
 			settings.Load();
 			txtBaseUrl.Text = settings.BaseURL;
@@ -395,18 +396,16 @@ namespace MapStitcher
 			return BaseURL.Replace("{X}", p.X.ToString()).Replace("{Y}", p.Y.ToString()).Replace("{Z}", z.ToString());
 		}
 
+		private static WebRequestUtility wru = new WebRequestUtility("Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko");
 		private static byte[] DownloadImage(string url)
 		{
-			byte[] image;
-			using (WebClient wc = new WebClient())
-			{
-				wc.Headers.Add("Accept", "text/html, application/xhtml+xml, image/jxr, */*");
-				wc.Headers.Add("Accept-Language", "en-US");
-				wc.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko");
-				wc.Headers.Add("Accept-Encoding", "gzip, deflate");
-				image = wc.DownloadData(url);
-			}
-			return image;
+			string[] headers = new string[]{
+				"Accept", "text/html, application/xhtml+xml, image/jxr, */*"
+			};
+			BpWebResponse response = wru.GET(url, headers);
+			if (response.StatusCode == 0)
+				throw new Exception("Connection failed to " + url);
+			return response.data;
 		}
 
 		private void WriteImageToCache(int z, int x, int y, byte[] data)
